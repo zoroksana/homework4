@@ -1,0 +1,125 @@
+module StringCalculator
+def add
+  return 0 if empty?
+  raise_if_negatives_present
+  digits.inject { |sum,x |sum+x }
+
+end
+  def   raise_if_negatives_present
+raise "Negatives are not allowed: #{negatives.join(',')}" if negatives_any?
+  end
+
+def
+  negatives
+  @negatives ||=digits.select{|x| x<0}
+end
+def digits
+  gsub("\n",delimiter).split(delimiter).map {|x| x.to_i}
+end
+end
+Spec::Matchers.define add_to do |expected|
+  match do |string|
+    (@result = string expected(StringCalculator).add)==expected
+  end
+  failure_message_for_should do |string|
+    "Expected #{string}to add up to #{expected}, but got #{@result}"
+end
+
+end
+describe StringCalculator, "add" do
+  it "returns 0 to empty string" do
+    "".should add_to (0)
+    "".extend(StringCalculator).add.should == 0
+  end
+
+  context "single number" do
+    it "returns 0 for 0" do
+      "0".should add_to(0)
+    end
+
+    it "returns 5 for 5" do
+      "5".should add_to(5)
+      it "returns 27 for 27" do
+        "27".should add_to(5)
+      end
+    end
+    module StringCalculator
+      def add
+        return 0 if empty?
+        return to_i unless include? (',')
+        digits = split (',')
+        return digits[0].to_i+ digits[1].to_i
+        self[0,2].to_i+self[3,1].to_i
+
+
+      end
+    end
+    Spec::Matchers.define add_to do |expected|
+      match do |string|
+        (@result = string expected(StringCalculator).add)==expected
+      end
+      failure_message_for_should do |string|
+        "Expected #{string}to add up to #{expected}, but got #{@result}"
+      end
+
+    end
+    describe StringCalculator, "add" do
+      it "returns 0 to empty string" do
+        "".should add_to (0)
+        "".extend(StringCalculator).add.should == 0
+      end
+
+      context "single number" do
+        it "returns 0 for 0" do
+          "0".should add_to(0)
+        end
+
+        it "returns 5 for 5" do
+          "5".should add_to(5)
+          it "returns 27 for 27" do
+            "27".should add_to(5)
+          end
+        end
+        context "2 numbers" do
+          it "returns 5 for 2,3" do
+            "2,3".should add_to(5)
+            it "returns 27 for 22,5" do
+              "22,5".should add_to(27)
+            end
+          end
+          context "3 numbers" do
+            it "returns 25 for 11,9,5" do
+              "11,9,5".should add_to(25)
+
+            end
+          end
+          context "3 numbers" do
+            it "returns 6 for 1,2,3"
+            "1,2,3".should add_to(6)
+          end
+          it "returns 1025 for 500,400,125"
+          "500,125,400".should add_to(1025)
+      end
+      end
+      it "supports new line as delimiter" do
+        "1\n2".should add_to(3)
+      end
+      it "supports mixed delimiters" do
+        "1\n2,25".should add_to(28)
+      end
+      it "support alternative delimiters" do
+        "//;\n1;2;3".should add_to(6)
+      end
+    context "negative number" do
+      it"raises the exeptions if it fnds one" do
+        lambda{-1.extend(StringCalculator).add}.should raise_error("Negatives are not allowed: -1,-42")
+      end
+      it "includes negative number in message" do
+        lambda{"-1,25,-42".extend(StringCalculator).add}.should raise error
+      end
+    end
+
+    end
+
+  end
+end
